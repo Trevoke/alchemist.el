@@ -65,11 +65,11 @@
 (require 'alchemist-key)
 (require 'alchemist-goto)
 (require 'alchemist-info)
-  (require 'alchemist-info)
-  (require 'alchemist-file)
-  (require 'alchemist-project)
+(require 'alchemist-info)
+(require 'alchemist-file)
+(require 'alchemist-project)
 (require 'alchemist-report)
-  (require 'alchemist-test-mode)
+(require 'alchemist-test-mode)
 (require 'alchemist-hex)
 (require 'alchemist-hooks)
 (require 'alchemist-message)
@@ -124,7 +124,7 @@ Key bindings:
 
 (defun alchemist-mode--enable ()
   (alchemist-test-initialize-modeline)
-  (lsp-elixir-mode-enable))
+  (lsp))
 
 (defun alchemist-mode--disable ()
   (alchemist-test-reset-modeline))
@@ -208,8 +208,8 @@ Key bindings:
   (define-key map (kbd "X I") 'alchemist-hex-info)
   (define-key map (kbd "X d") 'alchemist-hex-all-dependencies))
 
- (define-key alchemist-mode-map (kbd "M-.") 'alchemist-goto-definition-at-point)
- (define-key alchemist-mode-map (kbd "M-,") 'alchemist-goto-jump-back)
+(define-key alchemist-mode-map (kbd "M-.") 'alchemist-goto-definition-at-point)
+(define-key alchemist-mode-map (kbd "M-,") 'alchemist-goto-jump-back)
 ;; !!!
 (define-key alchemist-mode-map (kbd "C-c , .") 'alchemist-goto-list-symbol-definitions)
 (define-key alchemist-mode-map (kbd "M-P") 'alchemist-goto-jump-to-previous-def-symbol)

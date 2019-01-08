@@ -1,7 +1,7 @@
 ;;; alchemist-elixir-ls.el --- Functionality to jump modules and function definitions -*- lexical-binding: t -*-
 
 (require 'alchemist-project)
-(require 'lsp-imenu)
+;; (require 'lsp-imenu)
 (require 'lsp-mode)
 (require 'elixir-mode)
 (require 'dash)
@@ -18,21 +18,28 @@
 (defvar alchemist--project-settings nil
   "Where alchemist keeps its project-level settings")
 
-(lsp-define-stdio-client
- lsp-elixir-mode
- "elixir"
- (lambda () (alchemist-project-root-or-default-dir))
- (alchemist--lsp-server-path-for-current-project))
+(lsp-register-client
+ (make-lsp-client :new-connection (lsp-stdio-connection
+                                   #'alchemist--lsp-server-path-for-current-project)
+                  :major-modes '(elixir-mode)
+                  :priority 10
+                  :server-id 'alchemist-elixir-ls))
+
+;; (lsp-define-stdio-client
+;;  lsp-elixir-mode
+;;  "elixir"
+;;  (lambda () (alchemist-project-root-or-default-dir))
+;;  (alchemist--lsp-server-path-for-current-project))
 ;; '("~/src/projects/alchemist.el/elixir-ls/erl19/language_server.sh")
 
 (defun alchemist--lsp-server-path-for-current-project ()
-  `(,(concat alchemist-server-root-path
-           "erl"
-           (alchemist--server-erlang-version (alchemist-project-root-or-default-dir))
-           "/"
-           "language_server"
-           "."
-           (alchemist--server-extension))))
+  (concat alchemist-server-root-path
+          "erl"
+          (alchemist--server-erlang-version (alchemist-project-root-or-default-dir))
+          "/"
+          "language_server"
+          "."
+          (alchemist--server-extension)))
 
 
 (defun alchemist--server-erlang-version (project-path)
@@ -40,7 +47,7 @@
          (project-erlang-version (or (gethash project-path
                                               (gethash "alchemist-projects" project-settings-map))
                                      (completing-read "Choose which version of Erlang the LSP server should use: "
-                                                      '("19" "20")
+                                                      '("19" "20" "21")
                                                       nil
                                                       t
                                                       ))))
@@ -88,8 +95,8 @@
   (locate-user-emacs-file "alchemist-project-settings.el"))
 
 (add-hook 'lsp-mode-hook 'lsp-ui-mode)
-(add-hook 'alchemist-mode-hook 'lsp-elixir-mode-enable)
-(add-hook 'lsp-after-open-hook 'lsp-enable-imenu)
+(add-hook 'alchemist-mode-hook #'lsp)
+(add-hook 'lsp-after-open-hook #'lsp-enable-imenu)
 
 (defun alchemist-macro-expand (start-pos end-pos)
   "Expands the selected code once.
