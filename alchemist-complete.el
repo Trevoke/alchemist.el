@@ -59,7 +59,7 @@
 (defun alchemist-goto--open-definition (completion-candidate)
   (with-temp-buffer
     (alchemist-mode)
-    (lsp-elixir-mode-enable)
+    (lsp)
     (insert completion-candidate)
     (xref-find-definitions (alchemist-scope-expression))))
 
